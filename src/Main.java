@@ -18,13 +18,13 @@ public class Main {
 
         try {
             String[] printingArgs = Arrays.copyOfRange(args, 2, args.length);
-            ScrapCompleteListener listener = new ResultPrinter(printingArgs);
+            ScrapeCompleteListener listener = new ScrapeResultsPrinter(printingArgs);
             for (String url : buildUrlsList(args[0])) {
-                WebScrapper webScrapper = new WebScrapper(url, args[1], listener);
-                webScrapper.scrapWebPage();
+                WebScraper webScraper = new WebScraper(url, args[1], listener);
+                webScraper.scrapeWebPage();
             }
 
-        } catch (ResultPrinterArgumentException e) {
+        } catch (ScrapeResultsPrinterArgumentException e) {
             System.err.println(e.getMessage());
             System.exit(1);
         }

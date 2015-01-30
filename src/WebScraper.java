@@ -7,26 +7,26 @@ import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WebScrapper {
+public class WebScraper {
     private static final Pattern HEAD_PATTERN = Pattern.compile("<head>(.*?)</head>");
     private static final Pattern TITLE_PATTERN = Pattern.compile("<title>(.*?)</title>");
     private static final Pattern BODY_PATTERN = Pattern.compile("(<body\\b[^>]*>)(.*?)(</body>)");
     private static final Pattern ANYTAG_PATTERN = Pattern.compile("((<\\w+[^>]*>|</\\w+>)|(.*?))(<\\w+[^>]*>|</\\w+>)");
 
-    private ScrapResult scrapResult;
+    private ScrapeResult scrapeResult;
     private Pattern keywordRegex;
     private String url;
 
-    private ScrapCompleteListener listener;
+    private ScrapeCompleteListener listener;
 
-    public WebScrapper(String url, String searchArgs, ScrapCompleteListener listener) {
-        scrapResult = new ScrapResult(url);
+    public WebScraper(String url, String searchArgs, ScrapeCompleteListener listener) {
+        scrapeResult = new ScrapeResult(url);
         keywordRegex = buildKeywordsRegex(searchArgs);
         this.url = url;
         this.listener = listener;
     }
 
-    public void scrapWebPage() {
+    public void scrapeWebPage() {
 
         new Thread(new Runnable() {
 
@@ -35,7 +35,7 @@ public class WebScrapper {
                 try {
                     String page = getWebPage(url);
                     processWebPage(page);
-                    listener.onScrapComplete(scrapResult);
+                    listener.onScrapeComplete(scrapeResult);
                 } catch (MalformedURLException e) {
                     System.err.println("Url given is invalid!");
                     e.printStackTrace();
@@ -51,7 +51,7 @@ public class WebScrapper {
         long startTime = System.currentTimeMillis();
         processHeadTitle(page);
         processBody(page);
-        scrapResult.setProcessDataTime(System.currentTimeMillis() - startTime);
+        scrapeResult.setScrapeDataTime(System.currentTimeMillis() - startTime);
     }
 
     private void processHeadTitle(String page) {
@@ -60,7 +60,7 @@ public class WebScrapper {
             Matcher titleMatcher = TITLE_PATTERN.matcher(headMatcher.group());
             if (titleMatcher.find()) {
                 String title = normalizeTitle(titleMatcher.group());
-                scrapResult.incrementCharCounter(title.length());
+                scrapeResult.incrementCharCounter(title.length());
                 serachForKeywords(splitLine(title));
             }
         }
@@ -79,7 +79,7 @@ public class WebScrapper {
         while (anyTagMatcher.find()) {
             String line = anyTagMatcher.group();
             line = normalizeLine(line);
-            scrapResult.incrementCharCounter(line.length());
+            scrapeResult.incrementCharCounter(line.length());
             serachForKeywords(splitLine(line));
         }
     }
@@ -94,7 +94,7 @@ public class WebScrapper {
                 Matcher matcher = keywordRegex.matcher(str);
                 while (matcher.find()) {
                     String keyword = matcher.group().toLowerCase();
-                    scrapResult.keywordFound(keyword, str);
+                    scrapeResult.keywordFound(keyword, str);
                 }
             }
         }
@@ -122,7 +122,7 @@ public class WebScrapper {
             builder.append(s);
         }
         String result = builder.toString();
-        scrapResult.setScrapDataTime(System.currentTimeMillis() - startTime);
+        scrapeResult.setDownloadDataTime(System.currentTimeMillis() - startTime);
 
         return result;
     }

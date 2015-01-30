@@ -1,16 +1,16 @@
 
 import java.util.*;
 
-class ScrapResult {
+class ScrapeResult {
     private int charCounter = 0;
 
-    private long scrapDataTime;
-    private long processDataTime;
+    private long downloadDataTime;
+    private long scrapeDataTime;
     private Map<String, KeywordResult> keywords = new HashMap<String, KeywordResult>();
 
     private String url;
 
-    public ScrapResult(String url) {
+    public ScrapeResult(String url) {
         this.url = url;
     }
 
@@ -50,20 +50,20 @@ class ScrapResult {
         return result;
     }
 
-    public long getScrapDataTime() {
-        return scrapDataTime;
+    public long getDownloadDataTime() {
+        return downloadDataTime;
     }
 
-    public void setScrapDataTime(long scrapDataTime) {
-        this.scrapDataTime = scrapDataTime;
+    public void setDownloadDataTime(long downloadDataTime) {
+        this.downloadDataTime = downloadDataTime;
     }
 
-    public long getProcessDataTime() {
-        return processDataTime;
+    public long getScrapeDataTime() {
+        return scrapeDataTime;
     }
 
-    public void setProcessDataTime(long processDataTime) {
-        this.processDataTime = processDataTime;
+    public void setScrapeDataTime(long scrapeDataTime) {
+        this.scrapeDataTime = scrapeDataTime;
     }
 
     public String getUrl() {

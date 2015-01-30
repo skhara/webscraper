@@ -2,16 +2,16 @@
 import java.util.Map;
 import java.util.Set;
 
-public class ResultPrinter implements ScrapCompleteListener {
+public class ScrapeResultsPrinter implements ScrapeCompleteListener {
 
     boolean verboseOn = false;
     boolean wordsNumberOn = false;
     boolean characterNumberOn = false;
     boolean extractSentencesOn = false;
 
-    public ResultPrinter(String[] args) throws ResultPrinterArgumentException {
+    public ScrapeResultsPrinter(String[] args) throws ScrapeResultsPrinterArgumentException {
         if (args != null && args.length < 1) {
-            throw new ResultPrinterArgumentException("No printing options given! You should give at least one!");
+            throw new ScrapeResultsPrinterArgumentException("No printing options given! You should give at least one!");
         }
         for (String option : args) {
             option = option.trim();
@@ -24,22 +24,22 @@ public class ResultPrinter implements ScrapCompleteListener {
             } else if (option.equals("-e")) {
                 extractSentencesOn = true;
             } else {
-                throw new ResultPrinterArgumentException("Illegal printing option given: '" + option + "'");
+                throw new ScrapeResultsPrinterArgumentException("Illegal printing option given: '" + option + "'");
             }
         }
     }
 
     @Override
-    public void onScrapComplete(ScrapResult result) {
+    public void onScrapeComplete(ScrapeResult result) {
         printResults(result);
     }
 
-    private synchronized void printResults(ScrapResult result) {
+    private synchronized void printResults(ScrapeResult result) {
         System.out.println();
         System.out.println("*** Scraping results for: " + result.getUrl() + " ***");
         if (verboseOn) {
-            System.out.println("Scrapper time: " + result.getScrapDataTime() + " ms");
-            System.out.println("Process time: " + result.getProcessDataTime() + " ms");
+            System.out.println("Page download time: " + result.getDownloadDataTime() + " ms");
+            System.out.println("Scraping time: " + result.getScrapeDataTime() + " ms");
         }
 
         if (!result.hasHits()) {
