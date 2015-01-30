@@ -1,6 +1,7 @@
-
-import java.util.Map;
-import java.util.Set;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -8,65 +9,43 @@ public class Main {
             System.err.println("You missed necessary parameters!");
             System.exit(1);
         }
+
         if (!args[1].matches("\\w+(,\\w+)*")) {
             System.err.println("The second parameter should be a word\n" +
                     "or words separated by comma!");
             System.exit(1);
         }
 
-        boolean verbose = false;
-        boolean showWordsNumber = false;
-        boolean showCharacterNumber = false;
-        boolean showExtractedSentences = false;
-
-        for (int i = 2; i < args.length; i++) {
-            String option = args[i].trim();
-            if (option.equals("-v")) {
-                verbose = true;
-            } else if (option.equals("-w")) {
-                showWordsNumber = true;
-            } else if (option.equals("-c")) {
-                showCharacterNumber = true;
-            } else if (option.equals("-e")) {
-                showExtractedSentences = true;
-            } else {
-                System.err.println("Illegal option given: '" + args[i] + "'");
-                System.exit(1);
+        try {
+            String[] printingArgs = Arrays.copyOfRange(args, 2, args.length);
+            ScrapCompleteListener listener = new ResultPrinter(printingArgs);
+            for (String url : buildUrlsList(args[0])) {
+                WebScrapper webScrapper = new WebScrapper(url, args[1], listener);
+                webScrapper.scrapWebPage();
             }
-        }
 
-        WebScrapper webScrapper = new WebScrapper();
-        ScrapResult result = webScrapper.scrapWebPage(args[0], args[1]);
-
-        if (verbose) {
-            System.out.println("Scrapper time: " + result.getScrapDataTime() + " ms");
-            System.out.println("Process time: " + result.getProcessDataTime() + " ms");
-            System.out.println();
+        } catch (ResultPrinterArgumentException e) {
+            System.err.println(e.getMessage());
+            System.exit(1);
         }
+    }
 
-        if (showCharacterNumber) {
-            System.out.println("Count number of characters on webpage: " + result.getCharCounter());
-            System.out.println();
-        }
-        if (showWordsNumber) {
-            System.out.println("Hits list:");
-            for (Map.Entry<String, Integer> entry : result.getAllHits().entrySet()) {
-                System.out.println(entry.getKey() + ": " + entry.getValue());
+    private static List<String> buildUrlsList(String urlParam) {
+        List<String> urls = new ArrayList<String>();
+        try {
+            File file = new File(urlParam);
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String url;
+            while ((url = reader.readLine()) != null) {
+                urls.add(url);
             }
-            System.out.println();
+        } catch (FileNotFoundException e) {
+            urls.add(urlParam);
+        } catch (IOException e) {
+            System.err.println("Could not read urls info from file " + urlParam + "!");
+            e.printStackTrace();
+            System.exit(1);
         }
-        if (showExtractedSentences) {
-            System.out.println("Sentence list:");
-            for (Map.Entry<String, Set<String>> entry : result.getKeywordLines().entrySet()) {
-                String searchWord = entry.getKey();
-                Set<String> wordLines = entry.getValue();
-                System.out.println("Scraping for '" + searchWord + "' resulted in " +
-                        result.getHitsForWord(searchWord) + " hits:");
-                for (String wordLine : wordLines) {
-                    System.out.println(wordLine.replaceAll("(?i)" + searchWord + "\\b", "[[" + searchWord + "]]"));
-                }
-                System.out.println();
-            }
-        }
+        return urls;
     }
 }

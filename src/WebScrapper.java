@@ -15,26 +15,36 @@ public class WebScrapper {
 
     private ScrapResult scrapResult;
     private Pattern keywordRegex;
+    private String url;
 
-    public ScrapResult scrapWebPage(String url, String searchArgs) {
-        scrapResult = new ScrapResult();
+    private ScrapCompleteListener listener;
+
+    public WebScrapper(String url, String searchArgs, ScrapCompleteListener listener) {
+        scrapResult = new ScrapResult(url);
         keywordRegex = buildKeywordsRegex(searchArgs);
+        this.url = url;
+        this.listener = listener;
+    }
 
-        try {
-            String page = getWebPage(url);
-            processWebPage(page);
+    public void scrapWebPage() {
 
-        } catch (MalformedURLException e) {
-            System.err.println("Url given is invalid!");
-            e.printStackTrace();
-            System.exit(1);
-        } catch (IOException e) {
-            System.err.println("Cannot open given url!");
-            e.printStackTrace();
-            System.exit(1);
-        }
+        new Thread(new Runnable() {
 
-        return scrapResult;
+            @Override
+            public void run() {
+                try {
+                    String page = getWebPage(url);
+                    processWebPage(page);
+                    listener.onScrapComplete(scrapResult);
+                } catch (MalformedURLException e) {
+                    System.err.println("Url given is invalid!");
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    System.err.println("Cannot open given url!");
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     private void processWebPage(String page) {

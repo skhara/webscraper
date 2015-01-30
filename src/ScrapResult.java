@@ -6,9 +6,13 @@ class ScrapResult {
 
     private long scrapDataTime;
     private long processDataTime;
+    private Map<String, KeywordResult> keywords = new HashMap<String, KeywordResult>();
 
-    private Map<String, KeywordResult> keywords =
-            new HashMap<String, KeywordResult>();
+    private String url;
+
+    public ScrapResult(String url) {
+        this.url = url;
+    }
 
     public void keywordFound(String keyword, String contextLine) {
         if (keywords.containsKey(keyword)) {
@@ -60,5 +64,13 @@ class ScrapResult {
 
     public void setProcessDataTime(long processDataTime) {
         this.processDataTime = processDataTime;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public boolean hasHits() {
+        return keywords.size() > 0;
     }
 }
