@@ -49,7 +49,7 @@ public class ResultPrinter implements ScrapCompleteListener {
 
         if (characterNumberOn) {
             System.out.println();
-            System.out.println("Count number of characters on webpage: " + result.getCharCounter());
+            System.out.println("Total characters on webpage: " + result.getCharCounter());
         }
         if (wordsNumberOn) {
             System.out.println();
