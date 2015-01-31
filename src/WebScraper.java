@@ -59,7 +59,7 @@ public class WebScraper {
         if (headMatcher.find()) {
             Matcher titleMatcher = TITLE_PATTERN.matcher(headMatcher.group());
             if (titleMatcher.find()) {
-                String title = normalizeTitle(titleMatcher.group());
+                String title = removeTitleTags(titleMatcher.group());
                 scrapeResult.incrementCharCounter(title.length());
                 serachForKeywords(splitLine(title));
             }
@@ -69,7 +69,7 @@ public class WebScraper {
     private void processBody(String page) {
         Matcher matcher = BODY_PATTERN.matcher(page);
         if (matcher.find()) {
-            page = normalizeBody(matcher.group());
+            page = removeStylesAndScriptsTags(matcher.group());
             processBodyTagByTag(page);
         }
     }
@@ -78,7 +78,7 @@ public class WebScraper {
         Matcher anyTagMatcher = ANYTAG_PATTERN.matcher(page);
         while (anyTagMatcher.find()) {
             String line = anyTagMatcher.group();
-            line = normalizeLine(line);
+            line = removeTags(line);
             scrapeResult.incrementCharCounter(line.length());
             serachForKeywords(splitLine(line));
         }
@@ -127,21 +127,21 @@ public class WebScraper {
         return result;
     }
 
-    private String normalizeTitle(String title) {
+    private String removeTitleTags(String title) {
         return title
                 .replaceFirst("<title>", "")
                 .replaceFirst("</title>", "")
                 .trim();
     }
 
-    private String normalizeBody(String body) {
+    private String removeStylesAndScriptsTags(String body) {
         return body
                 .replaceAll("<(strong|span|em|br|i|pre|code|blockquote)\\b[^>]*>", "")
                 .replaceAll("</(strong|span|em|br|i|pre|code|blockquote)>", "")
                 .replaceAll("<script\\b[^>]*>(.*?)</script>", "");
     }
 
-    private String normalizeLine(String line) {
+    private String removeTags(String line) {
         return line
                 .replaceFirst("<\\w+[^>]*>", "")
                 .replaceFirst("<\\w+[^>]*>|</\\w+>", "")

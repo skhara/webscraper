@@ -36,8 +36,7 @@ public class ScrapeResultsPrinter implements ScrapeCompleteListener {
     }
 
     private synchronized void printResults(ScrapeResult result) {
-        System.out.println();
-        System.out.println("*** Scraping results for: " + result.getUrl() + " ***");
+        System.out.println("\n*** Scraping results for: " + result.getUrl() + " ***");
 
         if (verboseOn) {
             printElapsedTime(result);
@@ -67,21 +66,18 @@ public class ScrapeResultsPrinter implements ScrapeCompleteListener {
     }
 
     private void printCharactersTotal(ScrapeResult result) {
-        System.out.println();
-        System.out.println("Total characters on webpage: " + result.getCharCounter());
+        System.out.println("\nTotal characters on webpage: " + result.getCharCounter());
     }
 
     private void printHitsNumbers(ScrapeResult result) {
-        System.out.println();
-        System.out.println("Hits list:");
+        System.out.println("\nHits list:");
         for (Map.Entry<String, Integer> entry : result.getAllHits().entrySet()) {
             System.out.println(entry.getKey() + ": " + entry.getValue());
         }
     }
 
     private void printHitSentences(ScrapeResult result) {
-        System.out.println();
-        System.out.println("Sentence list:");
+        System.out.println("\nSentence list:");
         for (Map.Entry<String, Set<String>> entry : result.getKeywordLines().entrySet()) {
             String searchWord = entry.getKey();
             Set<String> wordLines = entry.getValue();
