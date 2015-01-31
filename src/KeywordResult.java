@@ -1,11 +1,11 @@
 
 import java.util.*;
 
-class KeywordResult {
+public class KeywordResult {
     private int wordCounter = 0;
-    Set<String> lines = new LinkedHashSet<String>();
+    private Set<String> lines = new LinkedHashSet<String>();
 
-    KeywordResult(String contextLine) {
+    public KeywordResult(String contextLine) {
         addLine(contextLine);
     }
 

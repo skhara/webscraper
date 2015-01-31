@@ -1,14 +1,14 @@
 
 import java.util.*;
 
-class ScrapeResult {
+public class ScrapeResult {
     private int charCounter = 0;
 
     private long downloadDataTime;
     private long scrapeDataTime;
-    private Map<String, KeywordResult> keywords = new HashMap<String, KeywordResult>();
 
-    private String url;
+    private Map<String, KeywordResult> keywords = new HashMap<String, KeywordResult>();
+    private final String url;
 
     public ScrapeResult(String url) {
         this.url = url;
